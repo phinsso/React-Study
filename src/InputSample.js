@@ -1,14 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
+
+/* javascript에서 특정 Dom을 선택하는 역할 ex) getElementById, querySelector
+특정 DOM에 접근할 때 사용한다.
+외부 라ㅣ브러리 사용할때 유용하다.
+원하는 위치에 ref={} 의 형태로 작성하면 된다.
+포커스를 잡으려면 nameInput.current.focus() 형태로 작성하면 된다. */
 
 function InputSample() {
   const [inputs, setInputs] = useState({
     name: '',
     nickname: ''
   });
+  const nameInput = useRef();
 
   const { name, nickname } = inputs; // 비구조화 할당을 통해 값 추출
 
-  const onChange = (e) => {
+  const onChange = e => {
     const { value, name } = e.target; // 우선 e.target 에서 name 과 value 를 추출
     setInputs({
       ...inputs, // 기존의 input 객체를 복사한 뒤
@@ -19,15 +26,26 @@ function InputSample() {
   const onReset = () => {
     setInputs({
       name: '',
-      nickname: '',
-    })
+      nickname: ''
+    });
+    nameInput.current.focus();
   };
-
 
   return (
     <div>
-      <input name="name" placeholder="이름" onChange={onChange} value={name} />
-      <input name="nickname" placeholder="닉네임" onChange={onChange} value={nickname}/>
+      <input
+        name="name"
+        placeholder="이름"
+        onChange={onChange}
+        value={name}
+        ref={nameInput}
+      />
+      <input
+        name="nickname"
+        placeholder="닉네임"
+        onChange={onChange}
+        value={nickname}
+      />
       <button onClick={onReset}>초기화</button>
       <div>
         <b>값: </b>
