@@ -1,12 +1,23 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import UserList from './UserList';
+import CreateUser from './CreateUser';
 
-/* useRef의 또 다른 역할
-    - 컴포넌트 안에서 조회 및 수정 할 수 있는 변수 관리
-    - useRef로 관리되는 변수는 값이 바뀌어도 컴포넌트가 리렌더링 되지 않는다.*/
+// 불변성을 지키면서 배열에 새 항목을 추가하는 방법
 
 function App() {
-  const users = [
+  const [inputs, setInputs] = useState({
+    username: '',
+    email: ''
+  });
+  const { username, email } = inputs;
+  const onChange = e => {
+    const { name, value } = e.target;
+    setInputs({
+      ...inputs,
+      [name]: value
+    });
+  };
+  const [users, setUsers] = useState([
     {
       id: 1,
       username: 'velopert',
@@ -22,16 +33,38 @@ function App() {
       username: 'liz',
       email: 'liz@example.com'
     }
-  ];
+  ]);
 
   const nextId = useRef(4);
   const onCreate = () => {
-    // 나중에 구현 할 배열에 항목 추가하는 로직
-    // ...
+    const user = {
+      id: nextId.current,
+      username,
+      email
+    };
+    // 1. spread 연산자 사용
+    setUsers([...users, user]);
 
+    // 2. concat() 사용
+    // setUsers(users.concat(user));
+
+    setInputs({
+      username: '',
+      email: ''
+    });
     nextId.current += 1;
   };
-  return <UserList users={users} />;
+  return (
+    <>
+      <CreateUser
+        username={username}
+        email={email}
+        onChange={onChange}
+        onCreate={onCreate}
+      />
+      <UserList users={users} />
+    </>
+  );
 }
 
 export default App;
