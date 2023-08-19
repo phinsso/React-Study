@@ -2,8 +2,10 @@ import React, { useRef, useState } from 'react';
 import UserList from './UserList';
 import CreateUser from './CreateUser';
 
-/* 배열에서 항목 제거하기
-    - filter를 사용하여 false인 값만 담는다. */
+/* 배열 항목 수정하기
+    - id값을 비교해서 id가 다르다면 그대로, 같다면 active값을 반전 (토글 형식)
+      - 불변성 유지 가능
+      - 배열 업데이트시 map 함수 사용 가능 */
 
 function App() {
   const [inputs, setInputs] = useState({
@@ -22,17 +24,20 @@ function App() {
     {
       id: 1,
       username: 'velopert',
-      email: 'public.velopert@gmail.com'
+      email: 'public.velopert@gmail.com',
+      active: true
     },
     {
       id: 2,
       username: 'tester',
-      email: 'tester@example.com'
+      email: 'tester@example.com',
+      active: false
     },
     {
       id: 3,
       username: 'liz',
-      email: 'liz@example.com'
+      email: 'liz@example.com',
+      active: false
     }
   ]);
 
@@ -57,6 +62,13 @@ function App() {
     // = user.id 가 id 인 것을 제거함
     setUsers(users.filter(user => user.id !== id));
   };
+  const onToggle = id => {
+    setUsers(
+      users.map(user =>
+        user.id === id ? { ...user, active: !user.active } : user
+      )
+    );
+  };
   return (
     <>
       <CreateUser
@@ -65,7 +77,7 @@ function App() {
         onChange={onChange}
         onCreate={onCreate}
       />
-      <UserList users={users} onRemove={onRemove} />
+      <UserList users={users} onRemove={onRemove} onToggle={onToggle} />
     </>
   );
 }
