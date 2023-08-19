@@ -2,7 +2,8 @@ import React, { useRef, useState } from 'react';
 import UserList from './UserList';
 import CreateUser from './CreateUser';
 
-// 불변성을 지키면서 배열에 새 항목을 추가하는 방법
+/* 배열에서 항목 제거하기
+    - filter를 사용하여 false인 값만 담는다. */
 
 function App() {
   const [inputs, setInputs] = useState({
@@ -42,17 +43,19 @@ function App() {
       username,
       email
     };
-    // 1. spread 연산자 사용
-    setUsers([...users, user]);
-
-    // 2. concat() 사용
-    // setUsers(users.concat(user));
+    setUsers(users.concat(user));
 
     setInputs({
       username: '',
       email: ''
     });
     nextId.current += 1;
+  };
+
+  const onRemove = id => {
+    // user.id 가 파라미터로 일치하지 않는 원소만 추출해서 새로운 배열을 만듬
+    // = user.id 가 id 인 것을 제거함
+    setUsers(users.filter(user => user.id !== id));
   };
   return (
     <>
@@ -62,7 +65,7 @@ function App() {
         onChange={onChange}
         onCreate={onCreate}
       />
-      <UserList users={users} />
+      <UserList users={users} onRemove={onRemove} />
     </>
   );
 }
